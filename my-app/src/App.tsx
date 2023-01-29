@@ -1,37 +1,35 @@
 import React, { useState } from 'react';
 
-const NFLPasserRatingCalculator: React.FC = () => {
+export const App: React.FC = () => {
   const [attempts, setAttempts] = useState(0);
   const [completions, setCompletions] = useState(0);
   const [yards, setYards] = useState(0);
   const [touchdowns, setTouchdowns] = useState(0);
   const [interceptions, setInterceptions] = useState(0);
   const [stats, setStats] = useState<Array<{
-    attempts: number;
-    completions: number;
-    yards: number;
+    attempts: number | undefined;
+    completions: number | undefined;
+    yards: number | undefined;
     touchdowns: number;
     interceptions: number;
   }>>([]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-
-    switch (name) {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    switch (event.target.name) {
       case 'attempts':
-        setAttempts(Number(value));
+        setAttempts(parseInt(event.target.value, 10));
         break;
       case 'completions':
-        setCompletions(Number(value));
+        setCompletions(parseInt(event.target.value, 10));
         break;
       case 'yards':
-        setYards(Number(value));
+        setYards(parseInt(event.target.value, 10));
         break;
       case 'touchdowns':
-        setTouchdowns(Number(value));
+        setTouchdowns(parseInt(event.target.value, 10));
         break;
       case 'interceptions':
-        setInterceptions(Number(value));
+        setInterceptions(parseInt(event.target.value, 10));
         break;
       default:
         break;
@@ -39,16 +37,18 @@ const NFLPasserRatingCalculator: React.FC = () => {
   };
 
   const addStats = () => {
-    setStats([
-      ...stats,
-      {
-        attempts,
-        completions,
-        yards,
-        touchdowns,
-        interceptions,
-      },
-    ]);
+    setStats([...stats, {
+      attempts,
+      completions,
+      yards,
+      touchdowns,
+      interceptions,
+    }]);
+    setAttempts(0);
+    setCompletions(0);
+    setYards(0);
+    setTouchdowns(0);
+    setInterceptions(0);
   };
 
   return (
@@ -61,6 +61,7 @@ const NFLPasserRatingCalculator: React.FC = () => {
           id="attempts"
           name="attempts"
           onChange={handleInputChange}
+          value={attempts}
         />
         <br />
         <label htmlFor="completions">Completions:</label>
@@ -69,6 +70,7 @@ const NFLPasserRatingCalculator: React.FC = () => {
           id="completions"
           name="completions"
           onChange={handleInputChange}
+          value={completions}
         />
         <br />
         <label htmlFor="yards">Yards:</label>
@@ -77,6 +79,7 @@ const NFLPasserRatingCalculator: React.FC = () => {
           id="yards"
           name="yards"
           onChange={handleInputChange}
+          value={yards}
         />
         <br />
         <label htmlFor="touchdowns">Touchdowns:</label>
@@ -85,30 +88,31 @@ const NFLPasserRatingCalculator: React.FC = () => {
           id="touchdowns"
           name="touchdowns"
           onChange={handleInputChange}
+          value={touchdowns}
         />
         <br />
         <label htmlFor="interceptions">Interceptions:</label>
-        <input
-          type="number"
-          id="interceptions"
-          name="interceptions"
-          onChange={handleInputChange}
-        />
-      </form>
-      <button onClick={addStats}>Add Stats</button>
-      <table>
-        <thead>
-          <tr>
-            <th>Attempts</th>
-            <th>Completions</th>
+<input
+       type="number"
+       id="interceptions"
+       name="interceptions"
+       onChange={handleInputChange}
+     />
+</form>
+<button onClick={addStats}>Add Stats</button>
+<table>
+<thead>
+<tr>
+<th>Attempts</th>
+<th>Completions</th>
 <th>Yards</th>
 <th>Touchdowns</th>
 <th>Interceptions</th>
 </tr>
 </thead>
 <tbody>
-{stats.map(stat => (
-<tr /*TODO: Give these rows ids: key={stat.id}*/>
+{stats.map((stat, index) => (
+<tr key={index}>
 <td>{stat.attempts}</td>
 <td>{stat.completions}</td>
 <td>{stat.yards}</td>
@@ -116,10 +120,40 @@ const NFLPasserRatingCalculator: React.FC = () => {
 <td>{stat.interceptions}</td>
 </tr>
 ))}
+<tr>
+<td>
+{stats.reduce(
+(acc, stat) => acc + stat.attempts!, // TODO: Handle "possibly undefined"
+0
+)}
+</td>
+<td>
+{stats.reduce(
+(acc, stat) => acc + stat.completions!, // TODO: Handle "possibly undefined"
+0
+)}
+</td>
+<td>
+{stats.reduce(
+(acc, stat) => acc + stat.yards!, // TODO: Handle "possibly undefined"
+0
+)}
+</td>
+<td>
+{stats.reduce(
+(acc, stat) => acc + stat.touchdowns,
+0
+)}
+</td>
+<td>
+{stats.reduce(
+(acc, stat) => acc + stat.interceptions,
+0
+)}
+</td>
+</tr>
 </tbody>
 </table>
 </div>
 );
 };
-
-export default NFLPasserRatingCalculator;
