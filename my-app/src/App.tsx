@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 
 export const App: React.FC = () => {
+  const [week, setWeek] = useState('');
   const [attempts, setAttempts] = useState(0);
   const [completions, setCompletions] = useState(0);
   const [yards, setYards] = useState(0);
   const [touchdowns, setTouchdowns] = useState(0);
   const [interceptions, setInterceptions] = useState(0);
   const [stats, setStats] = useState<Array<{
+    week: string,
     attempts: number | undefined;
     completions: number | undefined;
     yards: number | undefined;
@@ -16,6 +18,9 @@ export const App: React.FC = () => {
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     switch (event.target.name) {
+      case 'week':
+        setWeek(event.target.value);
+        break;
       case 'attempts':
         setAttempts(parseInt(event.target.value, 10));
         break;
@@ -38,6 +43,7 @@ export const App: React.FC = () => {
 
   const addStats = () => {
     setStats([...stats, {
+      week,
       attempts,
       completions,
       yards,
@@ -55,6 +61,15 @@ export const App: React.FC = () => {
     <div>
       <h1>NFL Passer Rating Calculator</h1>
       <form>
+      <label htmlFor="attempts">Season/Week:</label>
+        <input
+          type="string"
+          id="week"
+          name="week"
+          onChange={handleInputChange}
+          value={week}
+        />
+        <br />
         <label htmlFor="attempts">Attempts:</label>
         <input
           type="number"
@@ -103,6 +118,7 @@ export const App: React.FC = () => {
 <table>
 <thead>
 <tr>
+<th>Season/Week</th>
 <th>Attempts</th>
 <th>Completions</th>
 <th>Yards</th>
@@ -113,6 +129,7 @@ export const App: React.FC = () => {
 <tbody>
 {stats.map((stat, index) => (
 <tr key={index}>
+<td>{stat.week}</td>
 <td>{stat.attempts}</td>
 <td>{stat.completions}</td>
 <td>{stat.yards}</td>
@@ -121,6 +138,9 @@ export const App: React.FC = () => {
 </tr>
 ))}
 <tr>
+<td>
+{`${stats.length} Games`}
+</td>
 <td>
 {stats.reduce(
 (acc, stat) => acc + stat.attempts!, // TODO: Handle "possibly undefined"
